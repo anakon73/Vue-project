@@ -1,116 +1,61 @@
 <template>
   <div>
     <h1>Страница с постами</h1>
-    <MyInput v-model="searchQuery" placeholder="Поиск...." />
+    <my-input v-model="searchQuery" placeholder="Поиск...." v-focus />
     <div class="app__btns">
-      <MyButton @click="showDialog">Создать пост</MyButton>
-      <MySelect v-model="selectedSort" :options="sortOptions" />
-      <MyDialog v-model:show="dialogVisible"
-        ><PostForm @create="createPost"
-      /></MyDialog>
+      <my-button> Создать пользователя </my-button>
+      <my-select v-model="selectedSort" :options="sortOptions" />
     </div>
-    <PostList
-      :posts="sortedAndSearch"
-      @remove="removePost"
-      v-if="!isPostsLoading"
-    />
-    <div v-else>Идет Загрузка</div>
-    <PostPages
-      @changePages="ChangePage"
-      :page="page"
-      :totalPages="totalPages"
-    />
+    <my-dialog v-model:show="dialogVisible">
+      <post-form />
+    </my-dialog>
+    <post-list :posts="sortedAndSearchedPosts" v-if="!isPostsLoading" />
+    <div v-else>Идет загрузка...</div>
   </div>
 </template>
 
 <script>
 import PostForm from "../components/PostForm.vue";
 import PostList from "../components/PostList.vue";
-import axios from "axios";
 import MyButton from "../components/UI/MyButton.vue";
-import MyDialog from "../components/UI/MyDialog.vue";
-import MyInput from "../components/UI/MyInput.vue";
+import axios from "axios";
 import MySelect from "../components/UI/MySelect.vue";
-import PostPages from "../components/PostPages.vue";
-
+import MyInput from "../components/UI/MyInput.vue";
+import { ref } from "vue";
+import { usePosts } from "../hooks/usePosts";
+import useSortedPosts from "../hooks/useSortedPosts";
+import useSortedAndSearchedPosts from "../hooks/useSortedAndSearchedPosts.js";
 export default {
   components: {
-    PostForm,
-    PostList,
-    MyButton,
-    MyDialog,
     MyInput,
     MySelect,
-    PostPages,
+    MyButton,
+    PostList,
+    PostForm,
   },
   data() {
     return {
-      posts: [],
       dialogVisible: false,
-      isPostsLoading: false,
-      limit: 10,
-      page: 1,
-      totalPages: 0,
-      selectedSort: "",
-      searchQuery: "",
       sortOptions: [
         { value: "title", name: "По названию" },
         { value: "body", name: "По содержимому" },
       ],
     };
   },
-  methods: {
-    createPost(post) {
-      this.posts.push(post);
-      this.dialogVisible = false;
-    },
-    removePost(post) {
-      this.posts = this.posts.filter((p) => p.id !== post.id);
-    },
-    showDialog() {
-      this.dialogVisible = true;
-    },
-    ChangePage(pageNumber) {
-      this.page = pageNumber;
-      this.fetchPost();
-    },
-    async fetchPost() {
-      try {
-        this.isPostsLoading = true;
-        const response = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts",
-          {
-            params: {
-              _page: this.page,
-              _limit: this.limit,
-            },
-          }
-        );
-        this.totalPages = Math.ceil(
-          response.headers["x-total-count"] / this.limit
-        );
-        this.posts = response.data;
-      } catch (e) {
-        alert("Ошибка");
-      } finally {
-        this.isPostsLoading = false;
-      }
-    },
-  },
-  mounted() {
-    this.fetchPost();
-  },
-  computed: {
-    sortedPosts() {
-      return [...this.posts].sort((post1, post2) =>
-        post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
-      );
-    },
-    sortedAndSearch() {
-      return this.sortedPosts.filter((post) =>
-        post.title.toLowerCase().includes(this.searchQuery.toLocaleLowerCase())
-      );
-    },
+  setup(props) {
+    const { posts, totalPages, isPostsLoading } = usePosts(10);
+    const { sortedPosts, selectedSort } = useSortedPosts(posts);
+    const { searchQuery, sortedAndSearchedPosts } =
+      useSortedAndSearchedPosts(sortedPosts);
+    return {
+      posts,
+      totalPages,
+      isPostsLoading,
+      sortedPosts,
+      selectedSort,
+      searchQuery,
+      sortedAndSearchedPosts,
+    };
   },
 };
 </script>
