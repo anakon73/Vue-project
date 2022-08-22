@@ -3,6 +3,8 @@ import MainVue from "../pages/Main.vue";
 import PostPageVue from "../pages/PostPage.vue";
 import AboutVue from "../pages/About.vue";
 import PostIdPageVue from "../pages/PostIdPage.vue";
+import PostPageWithStoreVue from "../pages/PostPageWithStore.vue";
+import PostPageCompositionApiVue from "../pages/PostPageCompositionApi.vue";
 
 const routes = [
   {
@@ -20,6 +22,14 @@ const routes = [
   {
     path: "/posts/:id",
     component: PostIdPageVue,
+  },
+  {
+    path: "/store",
+    component: PostPageWithStoreVue,
+  },
+  {
+    path: "/composition",
+    component: PostPageCompositionApiVue,
   },
 ];
 const router = createRouter({
