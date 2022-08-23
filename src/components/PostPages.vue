@@ -34,7 +34,6 @@ export default {
 }
 .page {
   border: 1px solid teal;
-  padding: 10px 12px;
   border-radius: 10px;
   margin: 0px 2px;
 }
@@ -43,5 +42,20 @@ export default {
   margin: 0 15px;
   transform: scale3d(1.1, 1, 1.1);
   border-radius: 30%;
+}
+@media (max-width: 400px) {
+  .page {
+    padding: 3px;
+  }
+}
+@media (min-width: 400px) {
+  .page {
+    padding: 6px;
+  }
+}
+@media (min-width: 500px) {
+  .page {
+    padding: 10px 12px;
+  }
 }
 </style>

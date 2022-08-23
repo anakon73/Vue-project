@@ -91,7 +91,7 @@ export default {
         );
         this.posts = response.data;
       } catch (e) {
-        alert("Ошибка");
+        console.log(e);
       } finally {
         this.isPostsLoading = false;
       }
