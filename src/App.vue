@@ -1,10 +1,10 @@
 <template>
   <Slide v-model:show="navbarVisible"></Slide>
   <div></div>
-  <!-- <Navbar></Navbar>
+  <Navbar v-if="!navbarVisible"></Navbar>
   <div class="app">
     <router-view></router-view>
-  </div> -->
+  </div>
 </template>
 
 <script setup>
