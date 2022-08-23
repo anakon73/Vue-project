@@ -39,4 +39,13 @@ watch(width, showNavbar);
 .app {
   padding: 20px;
 }
+@media (max-width: 500px) {
+  .app {
+    margin-top: 40px;
+  }
+}
+.bm-burger-button {
+  left: 20px;
+  top: 20px;
+}
 </style>
